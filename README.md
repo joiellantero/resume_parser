@@ -4,12 +4,14 @@
 
 ## 🚀 Quickstart
 
-1. Install the dependencies
+1. Create and activate your virtual environment
+
+2. Install the dependencies
     ```shell
     $ pip install -r requirements.txt
     ```
 
-2. Run `main.py`
+3. Run `main.py`
     ```shell
     $ python main.py
     ```
