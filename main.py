@@ -24,6 +24,25 @@ SKILLS_DB = [
     'machine learning'
 ]
 
+RESERVED_WORDS = [
+    'school',
+    'college',
+    'univers',
+    'academy',
+    'faculty',
+    'institute',
+    'faculdades',
+    'Schola',
+    'schule',
+    'lise',
+    'lyceum',
+    'lycee',
+    'polytechnic',
+    'kolej',
+    'ünivers',
+    'okul',
+]
+
 
 def extract_text_from_pdf(pdf_path):
     return extract_text(pdf_path)
@@ -71,15 +90,31 @@ def extract_skills(resume_text):
     return found_skills
 
 
+def extract_education(resume_text):
+    organizations = []
+    for sent in nltk.sent_tokenize(resume_text):
+        for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+            if hasattr(chunk, 'label') and chunk.label() == 'ORGANIZATION':
+                organizations.append(' '.join(c[0] for c in chunk.leaves()))
+    education = set()
+    for org in organizations:
+        for word in RESERVED_WORDS:
+            if org.lower().find(word) >= 0:
+                education.add(org)
+    return education
+
+
 if __name__ == '__main__':
     resume = extract_text_from_pdf('./resume.pdf')
     names = extract_name(resume)
     phone_number = extract_phone_number(resume)
     emails = extract_emails(resume)
     skills = extract_skills(resume)
+    education = extract_education(resume)
 
-    if names:
+    if resume:
         print('[NAME]', names[0], names[1])
         print('[PHONE]', phone_number)
         print('[EMAIL]', emails[0])
         print('[SKILLS]', skills)
+        print('[EDUCATION]', education)
