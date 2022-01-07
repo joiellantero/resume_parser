@@ -2,5 +2,6 @@
 bin/
 lib/
 pyvenv.cfg
-resume.pdf
+test-data/
 .env
+.DS_Store

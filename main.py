@@ -1,6 +1,7 @@
 from pdfminer.high_level import extract_text
 import nltk
 import re
+import os
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -75,7 +76,6 @@ def extract_emails(resume_text):
 def extract_skills(resume_text):
     stop_words = set(nltk.corpus.stopwords.words('english'))
     word_tokens = nltk.tokenize.word_tokenize(resume_text)
-
     filtered_tokens = [w for w in word_tokens if w not in stop_words]
     filtered_tokens = [w for w in word_tokens if w.isalpha()]
     bigrams_trigrams = list(map(' '.join, nltk.everygrams(filtered_tokens, 2, 3)))
@@ -86,7 +86,6 @@ def extract_skills(resume_text):
     for ngram in bigrams_trigrams:
         if ngram.lower() in SKILLS_DB:
             found_skills.add(ngram)
-
     return found_skills
 
 
@@ -105,16 +104,34 @@ def extract_education(resume_text):
 
 
 if __name__ == '__main__':
-    resume = extract_text_from_pdf('./resume.pdf')
-    names = extract_name(resume)
-    phone_number = extract_phone_number(resume)
-    emails = extract_emails(resume)
-    skills = extract_skills(resume)
-    education = extract_education(resume)
+    filename = "alice_clark"
+    filepath = f'test-data/{filename}.pdf'
 
-    if resume:
-        print('[NAME]', names[0], names[1])
-        print('[PHONE]', phone_number)
-        print('[EMAIL]', emails[0])
-        print('[SKILLS]', skills)
-        print('[EDUCATION]', education)
+    try: 
+        if os.stat(filepath).st_size > 0:
+            resume = extract_text_from_pdf(filepath)
+            names = extract_name(resume)
+            phone_number = extract_phone_number(resume)
+            emails = extract_emails(resume)
+            skills = extract_skills(resume)
+            education = extract_education(resume)
+
+            if names:
+                print('[NAME]', names[0])
+
+            if phone_number:
+                print('[PHONE]', phone_number)
+
+            if emails:
+                print('[EMAIL]', emails[0])
+
+            if skills:
+                print('[SKILLS]', skills)
+
+            if education:
+                print('[EDUCATION]', education)
+        else:
+            print("[ERROR] Empty file")
+    except OSError:
+         print("[ERROR] Cannot find file")
+
