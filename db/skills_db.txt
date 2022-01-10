@@ -1,0 +1,16 @@
+python
+c 
+c++ 
+react
+reactjs
+java
+javascript
+word
+microsoft office
+english
+data science
+machine learning
+power automate
+powerapps 
+google appscripts 
+sharepoint

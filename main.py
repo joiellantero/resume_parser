@@ -11,38 +11,14 @@ nltk.download('stopwords')
 
 PHONE_REG = re.compile(r'[\+\(]?[1-9][0-9 .\-\(\)]{8,}[0-9]')
 EMAIL_REG = re.compile(r'[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+')
-SKILLS_DB = [
-    'python',
-    'c++',
-    'react',
-    'reactjs',
-    'java',
-    'javascript',
-    'word',
-    'microsoft office',
-    'english',
-    'data science',
-    'machine learning'
-]
 
-RESERVED_WORDS = [
-    'school',
-    'college',
-    'univers',
-    'academy',
-    'faculty',
-    'institute',
-    'faculdades',
-    'Schola',
-    'schule',
-    'lise',
-    'lyceum',
-    'lycee',
-    'polytechnic',
-    'kolej',
-    'ünivers',
-    'okul',
-]
+
+def convert_file_to_list(file):
+    file = open(file)
+    file = file.readlines()
+    lines = []
+    lines=[line.strip() for line in file]
+    return lines
 
 
 def extract_text_from_pdf(pdf_path):
@@ -80,11 +56,12 @@ def extract_skills(resume_text):
     filtered_tokens = [w for w in word_tokens if w.isalpha()]
     bigrams_trigrams = list(map(' '.join, nltk.everygrams(filtered_tokens, 2, 3)))
     found_skills = set()
+    skills_db = convert_file_to_list("./db/skills_db.txt")
     for token in filtered_tokens:
-        if token.lower() in SKILLS_DB:
+        if token.lower() in skills_db:
             found_skills.add(token)
     for ngram in bigrams_trigrams:
-        if ngram.lower() in SKILLS_DB:
+        if ngram.lower() in skills_db:
             found_skills.add(ngram)
     return found_skills
 
@@ -96,15 +73,16 @@ def extract_education(resume_text):
             if hasattr(chunk, 'label') and chunk.label() == 'ORGANIZATION':
                 organizations.append(' '.join(c[0] for c in chunk.leaves()))
     education = set()
+    education_db = convert_file_to_list("./db/education_db.txt")
     for org in organizations:
-        for word in RESERVED_WORDS:
+        for word in education_db:
             if org.lower().find(word) >= 0:
                 education.add(org)
     return education
 
 
 if __name__ == '__main__':
-    filename = "alice_clark"
+    filename = "resume"
     filepath = f'test-data/{filename}.pdf'
 
     try: 
