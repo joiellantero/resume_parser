@@ -18,7 +18,7 @@
    
 ## 👨‍💻 Author
 
-- [Joie Llantero](https://joiellantero.codes/)
+- [Joie Llantero](https://github.com/joiellantero)
 
 
 ## 📄 License 
